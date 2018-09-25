@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow_textview"
+    android:orientation="horizontal"
+    android:padding="@dimen/_8sdp">
+
+
+        <ImageView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:background="@drawable/ic_tab_profile"
+            android:padding="@dimen/_2sdp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/mTvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/mTvPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mTvName"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="phone"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/mTvDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/delete"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+</LinearLayout>
