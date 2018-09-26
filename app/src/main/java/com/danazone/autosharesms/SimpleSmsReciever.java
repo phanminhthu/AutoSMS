@@ -1,14 +1,12 @@
 package com.danazone.autosharesms;
 
-/**
- * Created by ismail on 7/12/17.
- */
 
 import android.Manifest;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.*;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,25 +24,23 @@ public class SimpleSmsReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        dbManager = new DBManager(context);
-        Bundle pudsBundle = intent.getExtras();
-        Object[] pdus = (Object[]) pudsBundle.get("pdus");
-        SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
-        SmsManager sms = SmsManager.getDefault();
+        System.out.println("6666666666666666666666666666666");
+        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
+            dbManager = new DBManager(context);
+            Bundle pudsBundle = intent.getExtras();
+            Object[] pdus = (Object[]) pudsBundle.get("pdus");
+            SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
+            SmsManager sms = SmsManager.getDefault();
 
-        if (messages.getOriginatingAddress().equals("Facebook")) {
 
-//            Intent smsIntent = new Intent(context, SMS_Receive.class);
-//            smsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                smsIntent.putExtra("MessageNumber", messages.getOriginatingAddress());
-//                smsIntent.putExtra("Message", messages.getMessageBody());
-//                context.startActivity(smsIntent);
+            if (messages.getOriginatingAddress().equalsIgnoreCase("Techcombank")) {
 
-            phone = dbManager.getAllPhone();
-            for (int i = 0; i < phone.size(); i++) {
-                sms.sendTextMessage(phone.get(i).getPhone(), null, messages.getMessageBody(), null, null);
+                phone = dbManager.getAllPhone();
+                for (int i = 0; i < phone.size(); i++) {
+                    sms.sendTextMessage(phone.get(i).getPhone(), null, messages.getMessageBody(), null, null);
+                    System.out.println("6666666666666666666666666666666" + phone.get(i));
+                }
             }
         }
     }
-
 }

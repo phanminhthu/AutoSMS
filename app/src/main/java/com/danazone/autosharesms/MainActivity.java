@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
         // Add SMS Read Permision At Runtime
 
         // Todo : If Permission Is Not GRANTED
-        if (ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.SEND_SMS") == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_CONTACTS") == PackageManager.PERMISSION_GRANTED
+        if (
+                ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.SEND_SMS") == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_CONTACTS") == PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") == PackageManager.PERMISSION_GRANTED
                 ) {
 
             // Todo : If Permission Granted Then Show SMS
@@ -78,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Todo : Then Set Permission
             final int REQUEST_CODE_ASK_PERMISSIONS = 123;
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{"android.permission.READ_SMS", "android.permission.SEND_SMS", "android.permission.READ_CONTACTS"}, REQUEST_CODE_ASK_PERMISSIONS);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                    "android.permission.SEND_SMS", Manifest.permission.RECEIVE_SMS, "android.permission.READ_CONTACTS", "android.permission.READ_SMS"
+            }, REQUEST_CODE_ASK_PERMISSIONS);
         }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,12 +94,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refreshSmsInbox() {
-        if (ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.SEND_SMS") != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_CONTACTS") != PackageManager.PERMISSION_GRANTED
-                ) {
-            Toast.makeText(MainActivity.this, "Vui lòng bậ quyền truy cập để sử dụng dịch vụ", Toast.LENGTH_SHORT).show();
-        }
+//        if (
+//                ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+//                        && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
+//                        && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
+//
+//                ) {
+//            Toast.makeText(MainActivity.this, "Vui lòng bật quyền truy cập để sử dụng dịch vụ", Toast.LENGTH_SHORT).show();
+//        }
 
         ContentResolver contentResolver = getContentResolver();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
-            if (smsInboxCursor.getString(indexAddress).equals("Facebook")) {
+            if (smsInboxCursor.getString(indexAddress).equalsIgnoreCase("Facebook")) {
                 String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
                         "\n" + smsInboxCursor.getString(indexBody) + "\n";
                 arrayAdapter.add(str);

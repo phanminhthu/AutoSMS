@@ -22,7 +22,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import dmax.dialog.SpotsDialog;
 
 public class AddActivity extends AppCompatActivity {
     private static final int RESULT_PICK_CONTACT = 100;
