@@ -41,7 +41,6 @@ public class SessionManager {
     }
 
 
-
     /**
      * get key save email
      *
@@ -51,5 +50,8 @@ public class SessionManager {
         return sharedPref.getString(KEY_SAVE_NAME, "");
     }
 
+    public void updateSaveName(String token) {
+        sharedPref.edit().putString(KEY_SAVE_NAME, token).apply();
+    }
 }
 

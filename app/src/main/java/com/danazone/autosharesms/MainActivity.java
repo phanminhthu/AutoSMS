@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView smsListView;
     private ArrayAdapter arrayAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ImageView mImgAdd;
 
     public static MainActivity instance() {
         return inst;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-
+        mImgAdd = (ImageView) findViewById(R.id.mImgAdd);
         smsListView = (ListView) findViewById(R.id.SMSList);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
 
@@ -91,17 +93,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddActivity.class));
             }
         });
+
+        mImgAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new StartDialog(MainActivity.this){
+
+                }.show();
+            }
+        });
     }
 
     public void refreshSmsInbox() {
-//        if (
-//                ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
-//                        && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
-//                        && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
-//
-//                ) {
-//            Toast.makeText(MainActivity.this, "Vui lòng bật quyền truy cập để sử dụng dịch vụ", Toast.LENGTH_SHORT).show();
-//        }
+        if (
+                ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.SEND_SMS") != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_CONTACTS") != PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED
+
+                ) {
+            Toast.makeText(MainActivity.this, "Vui lòng bật quyền truy cập để sử dụng dịch vụ", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         ContentResolver contentResolver = getContentResolver();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
@@ -110,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
-            if (smsInboxCursor.getString(indexAddress).equalsIgnoreCase("Facebook")) {
+            if (smsInboxCursor.getString(indexAddress).equalsIgnoreCase(SessionManager.getInstance().getKeySaveName())) {
                 String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
                         "\n" + smsInboxCursor.getString(indexBody) + "\n";
                 arrayAdapter.add(str);

